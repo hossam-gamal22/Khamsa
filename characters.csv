@@ -1,0 +1,41 @@
+id،key،name_ar،price،rarity،avatar،is_premium
+char_001،starter_01،كابوريا،0،common،Free_Avatar1،0
+char_002،starter_02،سمكه 1،0،common،Free_Avatar2،0
+char_003،starter_03،دولفين،0،common،Free_Avatar3،0
+char_004،starter_04،سلحفه،0،common،Free_Avatar4،0
+char_005،starter_05،سمكه 2،0،common،Free_Avatar5،0
+char_006،starter_06،عنب،0،common،Free_Avatar6،0
+char_007،starter_07،بنفسجي،0،common،Free_Avatar7،0
+char_008،starter_08،فراوله،0،common،Free_Avatar8،0
+char_009،starter_09،تمساح،0،common،Free_Avatar9،0
+char_0010،starter_010،ذئب،0،common،Free_Avatar10،0
+char_0011،starter_011،فيل،0،common،Free_Avatar11،0
+char_0012،starter_012،غزال،0،common،Free_Avatar12،0
+char_0013،starter_013،قرد،0،common،Free_Avatar13،0
+char_0014،starter_014،فضائي،0،common،Free_Avatar14،0
+char_0015،starter_015،زرافة،0،common،Free_Avatar15،0
+char_0016،starter_016،اغاني،0،common،Free_Avatar16،0
+char_0017،starter_017،تفاح،0،common،Free_Avatar17،0
+char_0018،starter_018،كيوي،0،common،Free_Avatar18،0
+char_0019،starter_019،بطيخ،0،common،Free_Avatar19،0
+char_0020،tier2_01،عبله كامل،500،uncommon،Premium_Avatar1،0
+char_0021،tier2_02،عبد الغفور البرعي،350،uncommon،Premium_Avatar2،0
+char_0022،tier2_03،حزلقوم 1،650،rare،Premium_Avatar3،0
+char_0023،tier2_04،خالة نوسه 1،400،rare،Premium_Avatar4،1
+char_0024،tier2_05،اللمبي،1200،epic،Premium_Avatar5،1
+char_0025،tier2_06،كتكوت،300،uncommon،Premium_Avatar6،1
+char_0026،tier2_07،الواد سيد الشغال،1000،epic،Premium_Avatar7،1
+char_0027،tier2_08،الفرن،300،uncommon،Premium_Avatar8،1
+char_0028،tier2_09،مربوحه،300،uncommon،Premium_Avatar9،1
+char_0029،tier2_10،حزلقوم 1،800،rare،Premium_Avatar10،1
+char_0030،tier2_11،هدية،700،rare،Premium_Avatar11،1
+char_0031،tier2_12،خلف الدهشوري،1400،rare،Premium_Avatar12،1
+char_0032،tier2_13،توت عنخ امون،600،uncommon،Premium_Avatar13،1
+char_0033،tier2_14،محمد ثروت،850،uncommon،Premium_Avatar14،1
+char_0034،tier2_15،وسيم الصريطي،200،uncommon،Premium_Avatar15،1
+char_0035،tier2_16،الدادة دودي،200،uncommon،Premium_Avatar16،1
+char_0036،tier2_17،خميس كاكا،1300،rare،Premium_Avatar17،1
+char_0037،tier2_18،الناظر،2000،rare،Premium_Avatar18،1
+char_0038،tier2_19،خالة نوسه 2،900،epic،Premium_Avatar19،1
+char_0039،tier2_20،اللمبي 2،1500،rare،Premium_Avatar20،1
+char_0040،tier2_21،الناظر 2،300،uncommon،Premium_Avatar21،1

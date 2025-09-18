@@ -1,0 +1,7 @@
+name,icon,coinAmount,realPrice,productId
+Starter Pack,starter_pack,200,100,com.khamsa.coins.starter
+Popular Pack,popular_pack,400,200,com.khamsa.coins.popular
+Best Value,best_value,1000,300,com.khamsa.coins.bestvalue
+Mega Pack,mega_pack,2000,500,com.khamsa.coins.mega
+Ultimate,ultimate_pack,3000,700,com.khamsa.coins.ultimate
+King Package,king_pack,5000,800,com.khamsa.coins.king
