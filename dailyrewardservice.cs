@@ -1,102 +1,61 @@
+using UnityEngine;
+using System;
+
 namespace Project.Core
 {
-    using UnityEngine;
-    using System;
-
-    [System.Serializable]
     public class DailyRewardService : MonoBehaviour
     {
-        [Header("Reward Configuration")]
-        [SerializeField] private int[] dailyRewards = { 20, 50, 150, 200, 300, 500, 1500 };
-        [SerializeField] private int bonusReward = 1500;
-        
-        private int currentDay;
-        private bool hasClaimedToday;
-        private DateTime lastClaimDate;
-        private int streak;
-        
-        public event System.Action<int> OnRewardClaimed;
-        public event System.Action OnRewardAvailable;
-        
+        public event Action OnRewardAvailable;
+
         public void Init()
         {
-            currentDay = PlayerPrefs.GetInt("DailyRewardDay", 1);
-            string lastClaimStr = PlayerPrefs.GetString("LastClaimDate", "");
-            
-            if (DateTime.TryParse(lastClaimStr, out lastClaimDate))
-            {
-                hasClaimedToday = (DateTime.Now.Date == lastClaimDate.Date);
-            }
-            else
-            {
-                hasClaimedToday = false;
-                lastClaimDate = DateTime.MinValue;
-            }
+            // Simulate reward availability (could use real date-based logic)
+            CheckRewardAvailability();
+        }
 
-            streak = PlayerPrefs.GetInt("DailyRewardStreak", 0);
-            
-            if (!hasClaimedToday && ShouldShowReward())
+        public void CheckRewardAvailability()
+        {
+            bool shouldShow = ShouldShowReward();
+
+            if (shouldShow)
             {
                 OnRewardAvailable?.Invoke();
             }
         }
-        
+
         public bool ShouldShowReward()
         {
-            return !hasClaimedToday;
+            // Basic check: has today's reward been claimed?
+            int today = GetTodayIndex();
+            return !IsDayClaimed(today);
         }
-        
-        public bool CanClaimReward()
+
+        public int GetTodayIndex()
         {
-            return !hasClaimedToday;
+            return Mathf.Clamp(PlayerPrefs.GetInt("DailyRewardDay", 0), 0, 7);
         }
-        
-        public int ClaimReward()
+
+        public bool IsDayClaimed(int dayIndex)
         {
-            if (!CanClaimReward()) return 0;
+            return PlayerPrefs.GetInt($"RewardClaimed_{dayIndex}", 0) == 1;
+        }
 
-            int reward = GetCurrentDayReward();
-            hasClaimedToday = true;
+        public void MarkDayClaimed(int dayIndex)
+        {
+            PlayerPrefs.SetInt($"RewardClaimed_{dayIndex}", 1);
+        }
 
+        public int GetRewardAmount(int dayIndex)
+        {
+            int[] rewards = { 50, 75, 100, 125, 150, 200, 300, 1500 };
+            return rewards[Mathf.Clamp(dayIndex, 0, rewards.Length - 1)];
+        }
+
+        public TimeSpan GetTimeUntilNextDay()
+        {
             DateTime now = DateTime.Now;
-            DateTime previousClaimDate = lastClaimDate;
-
-            if (previousClaimDate != DateTime.MinValue && previousClaimDate.Date.AddDays(1) == now.Date)
-            {
-                streak++;
-            }
-            else
-            {
-                streak = 1;
-            }
-            PlayerPrefs.SetInt("DailyRewardStreak", streak);
-
-            lastClaimDate = now;
-            PlayerPrefs.SetString("LastClaimDate", lastClaimDate.ToString());
-
-            currentDay = (currentDay % 7) + 1;
-            PlayerPrefs.SetInt("DailyRewardDay", currentDay);
-
-            OnRewardClaimed?.Invoke(reward);
-            return reward;
+            DateTime tomorrow = now.Date.AddDays(1);
+            return tomorrow - now;
         }
-        
-        public int GetCurrentDayReward()
-        {
-            if (currentDay <= dailyRewards.Length)
-                return dailyRewards[currentDay - 1];
-            return bonusReward;
-        }
-        
-        public int GetCurrentDay() => currentDay;
-        public bool HasClaimedToday() => hasClaimedToday;
-        public int TodayIndex => currentDay;
-        public bool ClaimedToday => hasClaimedToday;
-        public int Streak => streak;
-        
-        public void Open() { }
-        public void Close() { }
-        public void Build() { }
-        public void ApplyState() { }
     }
 }
