@@ -24,6 +24,11 @@ namespace Project.Systems
         private DataSyncService dataSyncService;
         private AvatarService avatarService;
         private RewardedAdService rewardedAdService;
+        
+        [Header("Scene Configuration")]
+        [SerializeField] private string nextSceneName = "App Shell";
+        [Tooltip("Scene to load after all services are initialized")]
+        
         [Header("Initialization Settings")]
         [SerializeField] private float initializationDelay = 0.1f;
         [SerializeField] private bool showDebugLogs = true;
@@ -81,10 +86,10 @@ namespace Project.Systems
             yield return InitializeRewardedAdService();
             yield return new WaitForSeconds(initializationDelay);
 
-            // Wait one frame before loading App Shell
+            // Wait one frame before loading next scene
             yield return null;
             
-            LoadAppShell();
+            LoadNextScene();
         }
 
         private IEnumerator InitializePlayerIdService()
@@ -256,12 +261,19 @@ namespace Project.Systems
             yield return null;
         }
 
-        private void LoadAppShell()
+        private void LoadNextScene()
         {
             if (showDebugLogs)
-                Debug.Log("[BootLoader] All services initialized. Loading App Shell...");
+                Debug.Log($"[BootLoader] All services initialized. Loading scene: {nextSceneName}");
                 
-            SceneManager.LoadScene("App Shell");
+            // Validate scene name before loading
+            if (string.IsNullOrEmpty(nextSceneName))
+            {
+                Debug.LogError("[BootLoader] Next scene name is empty! Please set it in the inspector.");
+                return;
+            }
+                
+            SceneManager.LoadScene(nextSceneName);
         }
 
         /// <summary>
