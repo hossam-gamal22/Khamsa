@@ -1,4 +1,4 @@
-namespace Project.Services
+namespace Project.Core
 {
     using UnityEngine;
 

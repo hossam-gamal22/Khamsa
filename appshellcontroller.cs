@@ -25,12 +25,15 @@ namespace Project.UI
         
         public void Init()
         {
-            headerController.Init();
-            profileBarController.Init();
-            footerNavController.Init();
-            dailySplashRewardController.Init();
+            if (headerController != null)
+                headerController.Init();
+            if (profileBarController != null)
+                profileBarController.Init();
+            if (footerNavController != null)
+                footerNavController.Init();
+            if (dailySplashRewardController != null)
+                dailySplashRewardController.Init();
 
-            // Fetch the global DailyRewardService from BootLoader if not assigned via inspector
             if (dailyRewardService == null)
             {
                 var boot = BootLoader.Instance;
@@ -42,9 +45,7 @@ namespace Project.UI
 
             if (dailyRewardService != null)
             {
-                // Subscribe to daily reward events
                 dailyRewardService.OnRewardAvailable += ShowDailyReward;
-                // Check if should show daily reward on first entry
                 if (dailyRewardService.ShouldShowReward())
                 {
                     ShowDailyReward();
@@ -54,7 +55,10 @@ namespace Project.UI
         
         private void ShowDailyReward()
         {
-            dailySplashRewardController.Open();
+            if (dailySplashRewardController != null)
+            {
+                dailySplashRewardController.Open();
+            }
         }
         
         public void Open() { }

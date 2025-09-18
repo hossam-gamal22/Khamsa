@@ -7,7 +7,7 @@ namespace Project.Core
     {
         [Header("Configuration")]
         [SerializeField] private int startingCoins = 100;
-        [SerializeField] private bool resetCoinsOnStart = false; // For testing
+        [SerializeField] private bool resetCoinsOnStart = false;
         
         private int coins;
         public event System.Action<int> OnCoinsChanged;
@@ -47,7 +47,6 @@ namespace Project.Core
             Debug.Log($"Added {amount} coins. Total: {coins}");
         }
         
-        // Inspector method for testing
         [ContextMenu("Add 1000 Coins")]
         private void AddTestCoins()
         {

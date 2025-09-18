@@ -23,28 +23,31 @@ namespace Project.UI.Views
             packageData = data;
             coinPackageService = service;
             
-            // Setup UI
-            packageNameText.text = data.name;
-            coinAmountText.text = $"+{data.coinAmount}";
-            realPriceText.text = data.realPrice;
-            buyButtonText.text = "شراء";
+            if (packageNameText != null)
+                packageNameText.text = data.name;
+            if (coinAmountText != null)
+                coinAmountText.text = $"+{data.coinAmount}";
+            if (realPriceText != null)
+                realPriceText.text = data.realPrice;
+            if (buyButtonText != null)
+                buyButtonText.text = "شراء";
             
-            // Load package icon
-            Sprite icon = coinPackageService.LoadCoinPackageIcon(data.icon);
-            if (icon != null)
+            if (packageIcon != null && coinPackageService != null)
             {
-                packageIcon.sprite = icon;
+                Sprite icon = coinPackageService.LoadCoinPackageIcon(data.icon);
+                if (icon != null)
+                {
+                    packageIcon.sprite = icon;
+                }
             }
             
-            buyButton.onClick.AddListener(OnBuyClicked);
+            if (buyButton != null)
+                buyButton.onClick.AddListener(OnBuyClicked);
         }
         
         private void OnBuyClicked()
         {
-            // TODO: Integrate with Unity IAP
-            coinPackageService.PurchaseCoinPackage(packageData.productId, packageData.coinAmount);
-            
-            // For testing purposes, show a message
+            coinPackageService?.PurchaseCoinPackage(packageData.productId, packageData.coinAmount);
             Debug.Log($"Attempting to purchase {packageData.name} for {packageData.realPrice}");
         }
     }

@@ -5,7 +5,6 @@ namespace Project.Core
     [System.Serializable]
     public class DataSyncService : MonoBehaviour
     {
-        // TODO: Implement online data synchronization
         public void Init()
         {
             // Stub for online data sync

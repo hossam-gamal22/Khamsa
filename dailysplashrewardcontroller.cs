@@ -4,7 +4,6 @@ namespace Project.UI
     using UnityEngine.UI;
     using TMPro;
     using Project.Core;
-    // Import Project.Systems to access BootLoader
     using Project.Systems;
 
     public class DailySplashRewardController : MonoBehaviour
@@ -24,24 +23,27 @@ namespace Project.UI
         
         public void Init()
         {
-            closeButton.onClick.AddListener(Close);
+            if (closeButton != null)
+                closeButton.onClick.AddListener(Close);
 
-            // Fetch global services from BootLoader if not assigned via the Inspector.
-            // This allows the controller to work even if service references are not wired manually.
-            if (dailyRewardService == null && BootLoader.Instance != null)
+            var bootLoader = BootLoader.Instance;
+            if (bootLoader != null)
             {
-                dailyRewardService = BootLoader.Instance.GetDailyRewardService();
-            }
-            if (coinsWallet == null && BootLoader.Instance != null)
-            {
-                coinsWallet = BootLoader.Instance.GetCoinsWallet();
+                if (dailyRewardService == null)
+                    dailyRewardService = bootLoader.GetDailyRewardService();
+                if (coinsWallet == null)
+                    coinsWallet = bootLoader.GetCoinsWallet();
             }
             
-            // Initialize day items
-            for (int i = 0; i < dayItems.Length; i++)
+            if (dayItems != null)
             {
-                int dayIndex = i;
-                dayItems[i].Init(dayIndex + 1, this);
+                for (int i = 0; i < dayItems.Length; i++)
+                {
+                    if (dayItems[i] != null)
+                    {
+                        dayItems[i].Init(i + 1, this);
+                    }
+                }
             }
             
             Build();
@@ -52,45 +54,52 @@ namespace Project.UI
             if (isOpen) return;
             
             isOpen = true;
-            splashPanel.SetActive(true);
+            if (splashPanel != null)
+                splashPanel.SetActive(true);
             Build();
         }
         
         public void Close()
         {
             isOpen = false;
-            splashPanel.SetActive(false);
+            if (splashPanel != null)
+                splashPanel.SetActive(false);
         }
         
         public void Build()
         {
-            if (!isOpen) return;
+            if (!isOpen || dailyRewardService == null) return;
             
             int currentDay = dailyRewardService.GetCurrentDay();
             bool hasClaimedToday = dailyRewardService.HasClaimedToday();
             
-            for (int i = 0; i < dayItems.Length; i++)
+            if (dayItems != null)
             {
-                int day = i + 1;
-                DayItemState state;
-                
-                if (day == currentDay)
+                for (int i = 0; i < dayItems.Length; i++)
                 {
-                    state = hasClaimedToday ? DayItemState.Claimed : DayItemState.Active;
+                    if (dayItems[i] != null)
+                    {
+                        int day = i + 1;
+                        DayItemState state;
+                        
+                        if (day == currentDay)
+                        {
+                            state = hasClaimedToday ? DayItemState.Claimed : DayItemState.Active;
+                        }
+                        else if (day < currentDay)
+                        {
+                            state = DayItemState.Claimed;
+                        }
+                        else
+                        {
+                            state = DayItemState.Inactive;
+                        }
+                        
+                        dayItems[i].ApplyState(state);
+                    }
                 }
-                else if (day < currentDay)
-                {
-                    state = DayItemState.Claimed;
-                }
-                else
-                {
-                    state = DayItemState.Inactive;
-                }
-                
-                dayItems[i].ApplyState(state);
             }
             
-            // Update tomorrow countdown if claimed today
             if (hasClaimedToday)
             {
                 UpdateTomorrowCountdown();
@@ -101,16 +110,19 @@ namespace Project.UI
         {
             var tomorrow = System.DateTime.Now.Date.AddDays(1);
             var timeUntilTomorrow = tomorrow - System.DateTime.Now;
-            countdownText.text = $"{timeUntilTomorrow.Hours:D2}:{timeUntilTomorrow.Minutes:D2}:{timeUntilTomorrow.Seconds:D2}";
+            if (countdownText != null)
+            {
+                countdownText.text = $"{timeUntilTomorrow.Hours:D2}:{timeUntilTomorrow.Minutes:D2}:{timeUntilTomorrow.Seconds:D2}";
+            }
         }
         
         public void OnDayItemClicked(int day)
         {
-            if (dailyRewardService.CanClaimReward() && day == dailyRewardService.GetCurrentDay())
+            if (dailyRewardService != null && dailyRewardService.CanClaimReward() && day == dailyRewardService.GetCurrentDay())
             {
                 int reward = dailyRewardService.ClaimReward();
-                coinsWallet.AddCoins(reward);
-                Build(); // Refresh UI
+                coinsWallet?.AddCoins(reward);
+                Build();
             }
         }
         

@@ -11,19 +11,19 @@ namespace Project.UI
         
         public void Init()
         {
-            manyGamesButton.onClick.AddListener(OnManyGamesClicked);
-            dailyChallengeButton.onClick.AddListener(OnDailyChallengeClicked);
+            if (manyGamesButton != null)
+                manyGamesButton.onClick.AddListener(OnManyGamesClicked);
+            if (dailyChallengeButton != null)
+                dailyChallengeButton.onClick.AddListener(OnDailyChallengeClicked);
         }
         
         private void OnManyGamesClicked()
         {
-            // TODO: Navigate to game selection
             Debug.Log("Many Games clicked");
         }
         
         private void OnDailyChallengeClicked()
         {
-            // TODO: Navigate to daily challenge
             Debug.Log("Daily Challenge clicked");
         }
         

@@ -3,7 +3,7 @@ namespace Project.UI
     using UnityEngine;
     using UnityEngine.UI;
     using Project.Core;
-    using Project.UI.Views;  // ADD THIS LINE
+    using Project.UI.Views;
 
     public enum ShopTab
     {
@@ -54,10 +54,14 @@ namespace Project.UI
         
         public void Init()
         {
-            charactersTab.onClick.AddListener(() => SetTab(ShopTab.Characters));
-            stickersTab.onClick.AddListener(() => SetTab(ShopTab.Stickers));
-            soundsTab.onClick.AddListener(() => SetTab(ShopTab.Sounds));
-            coinsTab.onClick.AddListener(() => SetTab(ShopTab.Coins));
+            if (charactersTab != null)
+                charactersTab.onClick.AddListener(() => SetTab(ShopTab.Characters));
+            if (stickersTab != null)
+                stickersTab.onClick.AddListener(() => SetTab(ShopTab.Stickers));
+            if (soundsTab != null)
+                soundsTab.onClick.AddListener(() => SetTab(ShopTab.Sounds));
+            if (coinsTab != null)
+                coinsTab.onClick.AddListener(() => SetTab(ShopTab.Coins));
             
             SetTab(ShopTab.Characters);
             BuildAllGrids();
@@ -68,35 +72,35 @@ namespace Project.UI
             currentTab = tab;
             
             // Hide all content
-            charactersContent.SetActive(false);
-            stickersContent.SetActive(false);
-            soundsContent.SetActive(false);
-            coinsContent.SetActive(false);
+            if (charactersContent != null) charactersContent.SetActive(false);
+            if (stickersContent != null) stickersContent.SetActive(false);
+            if (soundsContent != null) soundsContent.SetActive(false);
+            if (coinsContent != null) coinsContent.SetActive(false);
             
             // Reset tab scales
-            charactersTab.transform.localScale = Vector3.one;
-            stickersTab.transform.localScale = Vector3.one;
-            soundsTab.transform.localScale = Vector3.one;
-            coinsTab.transform.localScale = Vector3.one;
+            if (charactersTab != null) charactersTab.transform.localScale = Vector3.one;
+            if (stickersTab != null) stickersTab.transform.localScale = Vector3.one;
+            if (soundsTab != null) soundsTab.transform.localScale = Vector3.one;
+            if (coinsTab != null) coinsTab.transform.localScale = Vector3.one;
             
             // Activate selected tab
             switch (tab)
             {
                 case ShopTab.Characters:
-                    charactersContent.SetActive(true);
-                    charactersTab.transform.localScale = Vector3.one * 1.2f;
+                    if (charactersContent != null) charactersContent.SetActive(true);
+                    if (charactersTab != null) charactersTab.transform.localScale = Vector3.one * 1.2f;
                     break;
                 case ShopTab.Stickers:
-                    stickersContent.SetActive(true);
-                    stickersTab.transform.localScale = Vector3.one * 1.2f;
+                    if (stickersContent != null) stickersContent.SetActive(true);
+                    if (stickersTab != null) stickersTab.transform.localScale = Vector3.one * 1.2f;
                     break;
                 case ShopTab.Sounds:
-                    soundsContent.SetActive(true);
-                    soundsTab.transform.localScale = Vector3.one * 1.2f;
+                    if (soundsContent != null) soundsContent.SetActive(true);
+                    if (soundsTab != null) soundsTab.transform.localScale = Vector3.one * 1.2f;
                     break;
                 case ShopTab.Coins:
-                    coinsContent.SetActive(true);
-                    coinsTab.transform.localScale = Vector3.one * 1.2f;
+                    if (coinsContent != null) coinsContent.SetActive(true);
+                    if (coinsTab != null) coinsTab.transform.localScale = Vector3.one * 1.2f;
                     break;
             }
         }
@@ -111,45 +115,57 @@ namespace Project.UI
         
         private void BuildCharacterGrid()
         {
-            var avatars = avatarService.GetAllAvatars();
-            
-            foreach (var avatar in avatars)
+            if (avatarService != null && characterGrid != null && avatarCardPrefab != null)
             {
-                var card = Instantiate(avatarCardPrefab, characterGrid);
-                card.Setup(avatar, avatarService, coinsWallet);
+                var avatars = avatarService.GetAllAvatars();
+                
+                foreach (var avatar in avatars)
+                {
+                    var card = Instantiate(avatarCardPrefab, characterGrid);
+                    card.Setup(avatar, avatarService, coinsWallet);
+                }
             }
         }
         
         private void BuildStickerGrid()
         {
-            var stickers = stickerService.GetAllStickers();
-            
-            foreach (var sticker in stickers)
+            if (stickerService != null && stickerGrid != null && stickerCardPrefab != null)
             {
-                var card = Instantiate(stickerCardPrefab, stickerGrid);
-                card.Setup(sticker, stickerService, coinsWallet);
+                var stickers = stickerService.GetAllStickers();
+                
+                foreach (var sticker in stickers)
+                {
+                    var card = Instantiate(stickerCardPrefab, stickerGrid);
+                    card.Setup(sticker, stickerService, coinsWallet);
+                }
             }
         }
         
         private void BuildSoundGrid()
         {
-            var sounds = soundService.GetAllSounds();
-            
-            foreach (var sound in sounds)
+            if (soundService != null && soundGrid != null && soundCardPrefab != null)
             {
-                var card = Instantiate(soundCardPrefab, soundGrid);
-                card.Setup(sound, soundService, coinsWallet);
+                var sounds = soundService.GetAllSounds();
+                
+                foreach (var sound in sounds)
+                {
+                    var card = Instantiate(soundCardPrefab, soundGrid);
+                    card.Setup(sound, soundService, coinsWallet);
+                }
             }
         }
         
         private void BuildCoinGrid()
         {
-            var coinPackages = coinPackageService.GetAllCoinPackages();
-            
-            foreach (var package in coinPackages)
+            if (coinPackageService != null && coinGrid != null && coinCardPrefab != null)
             {
-                var card = Instantiate(coinCardPrefab, coinGrid);
-                card.Setup(package, coinPackageService);
+                var coinPackages = coinPackageService.GetAllCoinPackages();
+                
+                foreach (var package in coinPackages)
+                {
+                    var card = Instantiate(coinCardPrefab, coinGrid);
+                    card.Setup(package, coinPackageService);
+                }
             }
         }
         

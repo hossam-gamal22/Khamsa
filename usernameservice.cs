@@ -47,25 +47,21 @@ namespace Project.Core
         
         public ValidationResult ValidateUsername(string newUsername)
         {
-            // Check if empty
             if (string.IsNullOrEmpty(newUsername.Trim()))
             {
                 return ValidationResult.Empty;
             }
             
-            // Check length
             if (newUsername.Length > maxUsernameLength)
             {
                 return ValidationResult.TooLong;
             }
             
-            // Check for Arabic characters
             if (ContainsArabic(newUsername))
             {
                 return ValidationResult.ContainsArabic;
             }
             
-            // Check if already taken (TODO: implement server check)
             if (IsUsernameTaken(newUsername))
             {
                 return ValidationResult.AlreadyTaken;
@@ -93,14 +89,11 @@ namespace Project.Core
         
         private bool ContainsArabic(string text)
         {
-            // Arabic Unicode range: U+0600 to U+06FF
             return Regex.IsMatch(text, @"[\u0600-\u06FF]");
         }
         
         private bool IsUsernameTaken(string username)
         {
-            // TODO: Implement server check
-            // For now, simulate some taken usernames
             string[] takenUsernames = { "admin", "test", "khamsa", "game" };
             return System.Array.Exists(takenUsernames, u => u.ToLower() == username.ToLower());
         }

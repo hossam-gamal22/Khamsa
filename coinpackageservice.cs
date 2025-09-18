@@ -11,8 +11,8 @@ namespace Project.Core
             public string name;
             public string icon;
             public int coinAmount;
-            public string realPrice; // "$2.99", "200L.E", etc.
-            public string productId; // For IAP integration
+            public string realPrice;
+            public string productId;
         }
         
         private CoinPackageData[] coinPackages;
@@ -24,12 +24,11 @@ namespace Project.Core
         
         private void LoadCoinPackageDatabase()
         {
-            // Load from Resources/DB/coin_packages.csv
             TextAsset csvFile = Resources.Load<TextAsset>("DB/coin_packages");
             if (csvFile != null)
             {
                 string[] lines = csvFile.text.Split('\n');
-                coinPackages = new CoinPackageData[lines.Length - 1]; // Skip header
+                coinPackages = new CoinPackageData[lines.Length - 1];
                 
                 for (int i = 1; i < lines.Length; i++)
                 {
@@ -58,12 +57,7 @@ namespace Project.Core
         
         public void PurchaseCoinPackage(string productId, int coinAmount)
         {
-            // TODO: Integrate with Unity IAP
-            // For now, just add coins (for testing)
             Debug.Log($"Purchasing {coinAmount} coins with product ID: {productId}");
-            
-            // In real implementation, this would be called after successful IAP
-            // CoinsWallet.Instance.AddCoins(coinAmount);
         }
         
         public void Open() { }

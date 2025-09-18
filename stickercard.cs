@@ -26,46 +26,51 @@ namespace Project.UI.Views
             stickerService = service;
             coinsWallet = wallet;
             
-            // Setup UI
-            nameText.text = data.name;
-            quantityText.text = $"x{data.quantity}";
-            priceText.text = data.price.ToString();
+            if (nameText != null)
+                nameText.text = data.name;
+            if (quantityText != null)
+                quantityText.text = $"x{data.quantity}";
+            if (priceText != null)
+                priceText.text = data.price.ToString();
             
-            // Load sticker icon
-            Sprite icon = stickerService.LoadStickerIcon(data.icon);
-            if (icon != null)
+            if (stickerImage != null && stickerService != null)
             {
-                stickerImage.sprite = icon;
+                Sprite icon = stickerService.LoadStickerIcon(data.icon);
+                if (icon != null)
+                {
+                    stickerImage.sprite = icon;
+                }
             }
             
-            buyButton.onClick.AddListener(OnBuyClicked);
+            if (buyButton != null)
+                buyButton.onClick.AddListener(OnBuyClicked);
             UpdateVisuals();
         }
         
         private void UpdateVisuals()
         {
-            bool isOwned = stickerService.IsStickerOwned(stickerData.name);
-            bool canAfford = coinsWallet.GetCoins() >= stickerData.price;
+            bool isOwned = stickerService != null && stickerService.IsStickerOwned(stickerData.name);
+            bool canAfford = coinsWallet != null && coinsWallet.GetCoins() >= stickerData.price;
             
             if (isOwned)
             {
-                ownedOverlay.SetActive(true);
-                statusText.text = "مملوك";
-                buyButton.interactable = false;
+                if (ownedOverlay != null) ownedOverlay.SetActive(true);
+                if (statusText != null) statusText.text = "مملوك";
+                if (buyButton != null) buyButton.interactable = false;
             }
             else
             {
-                ownedOverlay.SetActive(false);
-                statusText.text = canAfford ? "شراء" : "لا يكفي";
-                buyButton.interactable = canAfford;
+                if (ownedOverlay != null) ownedOverlay.SetActive(false);
+                if (statusText != null) statusText.text = canAfford ? "شراء" : "لا يكفي";
+                if (buyButton != null) buyButton.interactable = canAfford;
             }
         }
         
         private void OnBuyClicked()
         {
-            if (coinsWallet.SpendCoins(stickerData.price))
+            if (coinsWallet != null && coinsWallet.SpendCoins(stickerData.price))
             {
-                stickerService.PurchaseSticker(stickerData.name);
+                stickerService?.PurchaseSticker(stickerData.name);
                 UpdateVisuals();
             }
         }

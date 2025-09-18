@@ -22,14 +22,12 @@ namespace Project.Core
         {
             LoadSoundDatabase();
             
-            // Create AudioSource for previews
             audioSource = gameObject.GetComponent<AudioSource>();
             if (audioSource == null)
             {
                 audioSource = gameObject.AddComponent<AudioSource>();
             }
             
-            // Load owned sounds
             string ownedStr = PlayerPrefs.GetString("OwnedSounds", "");
             ownedSounds = string.IsNullOrEmpty(ownedStr) ? new string[0] : ownedStr.Split(',');
             
@@ -38,12 +36,11 @@ namespace Project.Core
         
         private void LoadSoundDatabase()
         {
-            // Load from Resources/DB/sounds.csv
             TextAsset csvFile = Resources.Load<TextAsset>("DB/sounds");
             if (csvFile != null)
             {
                 string[] lines = csvFile.text.Split('\n');
-                sounds = new SoundData[lines.Length - 1]; // Skip header
+                sounds = new SoundData[lines.Length - 1];
                 
                 for (int i = 1; i < lines.Length; i++)
                 {
@@ -93,13 +90,11 @@ namespace Project.Core
         
         public void PurchaseSound(string soundName)
         {
-            // Add to owned sounds
             var newOwned = new string[ownedSounds.Length + 1];
             ownedSounds.CopyTo(newOwned, 0);
             newOwned[ownedSounds.Length] = soundName;
             ownedSounds = newOwned;
             
-            // Save to PlayerPrefs
             PlayerPrefs.SetString("OwnedSounds", string.Join(",", ownedSounds));
             Debug.Log($"Purchased sound: {soundName}");
         }

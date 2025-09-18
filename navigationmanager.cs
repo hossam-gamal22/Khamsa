@@ -29,10 +29,14 @@ namespace Project.Main_Screen
         
         public void Init()
         {
-            homePageController.Init();
-            shopPageController.Init();
-            friendsPageController.Init();
-            profilePageController.Init();
+            if (homePageController != null)
+                homePageController.Init();
+            if (shopPageController != null)
+                shopPageController.Init();
+            if (friendsPageController != null)
+                friendsPageController.Init();
+            if (profilePageController != null)
+                profilePageController.Init();
             
             NavigateToPage(PageType.Home);
         }
@@ -43,20 +47,20 @@ namespace Project.Main_Screen
             switch (currentPage)
             {
                 case PageType.Home:
-                    homePageController.Close();
-                    homePage.SetActive(false);
+                    if (homePageController != null) homePageController.Close();
+                    if (homePage != null) homePage.SetActive(false);
                     break;
                 case PageType.Shop:
-                    shopPageController.Close();
-                    shopPage.SetActive(false);
+                    if (shopPageController != null) shopPageController.Close();
+                    if (shopPage != null) shopPage.SetActive(false);
                     break;
                 case PageType.Friends:
-                    friendsPageController.Close();
-                    friendsPage.SetActive(false);
+                    if (friendsPageController != null) friendsPageController.Close();
+                    if (friendsPage != null) friendsPage.SetActive(false);
                     break;
                 case PageType.Profile:
-                    profilePageController.Close();
-                    profilePage.SetActive(false);
+                    if (profilePageController != null) profilePageController.Close();
+                    if (profilePage != null) profilePage.SetActive(false);
                     break;
             }
             
@@ -65,20 +69,20 @@ namespace Project.Main_Screen
             switch (page)
             {
                 case PageType.Home:
-                    homePage.SetActive(true);
-                    homePageController.Open();
+                    if (homePage != null) homePage.SetActive(true);
+                    if (homePageController != null) homePageController.Open();
                     break;
                 case PageType.Shop:
-                    shopPage.SetActive(true);
-                    shopPageController.Open();
+                    if (shopPage != null) shopPage.SetActive(true);
+                    if (shopPageController != null) shopPageController.Open();
                     break;
                 case PageType.Friends:
-                    friendsPage.SetActive(true);
-                    friendsPageController.Open();
+                    if (friendsPage != null) friendsPage.SetActive(true);
+                    if (friendsPageController != null) friendsPageController.Open();
                     break;
                 case PageType.Profile:
-                    profilePage.SetActive(true);
-                    profilePageController.Open();
+                    if (profilePage != null) profilePage.SetActive(true);
+                    if (profilePageController != null) profilePageController.Open();
                     break;
             }
         }

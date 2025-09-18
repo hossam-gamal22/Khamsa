@@ -3,8 +3,6 @@ namespace Project.UI
     using UnityEngine;
     using UnityEngine.UI;
     using TMPro;
-    using Project.Services;
-    // Import Project.Systems to access BootLoader
     using Project.Systems;
 
     public enum DayItemState
@@ -38,9 +36,13 @@ namespace Project.UI
         {
             dayNumber = day;
             controller = rewardController;
-            audioService = BootLoader.Instance.GetAudioService();
             
-            // Set day text
+            var bootLoader = BootLoader.Instance;
+            if (bootLoader != null)
+            {
+                audioService = bootLoader.GetAudioService();
+            }
+            
             if (dayText != null)
             {
                 if (day <= 7)
@@ -53,15 +55,21 @@ namespace Project.UI
                 }
             }
             
-            claimButton.onClick.AddListener(() => {
-                audioService?.PlayButtonClick();
-                controller.OnDayItemClicked(dayNumber);
-            });
+            if (claimButton != null)
+            {
+                claimButton.onClick.AddListener(() => {
+                    audioService?.PlayButtonClick();
+                    controller.OnDayItemClicked(dayNumber);
+                });
+            }
             
-            doubleButton.onClick.AddListener(() => {
-                audioService?.PlayButtonClick();
-                controller.OnDoubleReward(dayNumber);
-            });
+            if (doubleButton != null)
+            {
+                doubleButton.onClick.AddListener(() => {
+                    audioService?.PlayButtonClick();
+                    controller.OnDoubleReward(dayNumber);
+                });
+            }
         }
         
         public void ApplyState(DayItemState state)
@@ -86,84 +94,78 @@ namespace Project.UI
         
         private void SetActiveState()
         {
-            // Visual setup
-            dimOverlay.SetActive(false);
-            checkMark.SetActive(false);
-            claimButton.interactable = true;
-            doubleButton.interactable = false;
-            canvasGroup.alpha = 1f;
+            if (dimOverlay != null) dimOverlay.SetActive(false);
+            if (checkMark != null) checkMark.SetActive(false);
+            if (claimButton != null) claimButton.interactable = true;
+            if (doubleButton != null) doubleButton.interactable = false;
+            if (canvasGroup != null) canvasGroup.alpha = 1f;
             
-            // Day text color (green for active)
             if (dayText != null)
             {
                 dayText.color = activeDayColor;
             }
             
-            // Scale animation for active day
             LeanTween.scale(gameObject, Vector3.one * 1.2f, 0.3f)
                 .setEase(LeanTweenType.easeOutBack);
             
-            // Pulsing glow effect
             StartPulseEffect();
         }
         
         private void SetClaimedState()
         {
-            // Visual setup
-            dimOverlay.SetActive(true);
-            checkMark.SetActive(true);
-            claimButton.interactable = false;
-            doubleButton.interactable = true;
-            canvasGroup.alpha = 0.7f;
+            if (dimOverlay != null) dimOverlay.SetActive(true);
+            if (checkMark != null) checkMark.SetActive(true);
+            if (claimButton != null) claimButton.interactable = false;
+            if (doubleButton != null) doubleButton.interactable = true;
+            if (canvasGroup != null) canvasGroup.alpha = 0.7f;
             
-            // Day text color (normal for claimed)
             if (dayText != null)
             {
                 dayText.color = normalDayColor;
             }
             
-            // Update text
             if (rewardText != null)
             {
                 rewardText.text = "استلمت";
             }
             
-            // Reset scale
             transform.localScale = Vector3.one;
             StopPulseEffect();
         }
         
         private void SetInactiveState()
         {
-            // Visual setup
-            dimOverlay.SetActive(true);
-            checkMark.SetActive(false);
-            claimButton.interactable = false;
-            doubleButton.interactable = false;
-            canvasGroup.alpha = 0.5f;
+            if (dimOverlay != null) dimOverlay.SetActive(true);
+            if (checkMark != null) checkMark.SetActive(false);
+            if (claimButton != null) claimButton.interactable = false;
+            if (doubleButton != null) doubleButton.interactable = false;
+            if (canvasGroup != null) canvasGroup.alpha = 0.5f;
             
-            // Day text color (normal for inactive)
             if (dayText != null)
             {
                 dayText.color = normalDayColor;
             }
             
-            // Reset scale
             transform.localScale = Vector3.one;
             StopPulseEffect();
         }
         
         private void StartPulseEffect()
         {
-            // Gentle pulsing effect for active day
-            LeanTween.alpha(canvasGroup.gameObject, 0.8f, 1f)
-                .setLoopPingPong()
-                .setEase(LeanTweenType.easeInOutSine);
+            if (canvasGroup != null)
+            {
+                LeanTween.alpha(canvasGroup.gameObject, 0.8f, 1f)
+                    .setLoopPingPong()
+                    .setEase(LeanTweenType.easeInOutSine);
+            }
         }
         
         private void StopPulseEffect()
         {
-            LeanTween.cancel(canvasGroup.gameObject);
+            if (canvasGroup != null)
+            {
+                LeanTween.cancel(canvasGroup.gameObject);
+            }
         }
         
         private void OnDestroy()

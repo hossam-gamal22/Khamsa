@@ -24,9 +24,12 @@ namespace Project.UI
         
         public void Init()
         {
-            friendsListTab.onClick.AddListener(() => SetTab(FriendsTab.FriendsList));
-            addFriendTab.onClick.AddListener(() => SetTab(FriendsTab.AddFriend));
-            requestsTab.onClick.AddListener(() => SetTab(FriendsTab.Requests));
+            if (friendsListTab != null)
+                friendsListTab.onClick.AddListener(() => SetTab(FriendsTab.FriendsList));
+            if (addFriendTab != null)
+                addFriendTab.onClick.AddListener(() => SetTab(FriendsTab.AddFriend));
+            if (requestsTab != null)
+                requestsTab.onClick.AddListener(() => SetTab(FriendsTab.Requests));
             
             SetTab(FriendsTab.FriendsList);
         }
@@ -34,21 +37,21 @@ namespace Project.UI
         private void SetTab(FriendsTab tab)
         {
             // Hide all content
-            friendsListContent.SetActive(false);
-            addFriendContent.SetActive(false);
-            requestsContent.SetActive(false);
+            if (friendsListContent != null) friendsListContent.SetActive(false);
+            if (addFriendContent != null) addFriendContent.SetActive(false);
+            if (requestsContent != null) requestsContent.SetActive(false);
             
             // Show selected content
             switch (tab)
             {
                 case FriendsTab.FriendsList:
-                    friendsListContent.SetActive(true);
+                    if (friendsListContent != null) friendsListContent.SetActive(true);
                     break;
                 case FriendsTab.AddFriend:
-                    addFriendContent.SetActive(true);
+                    if (addFriendContent != null) addFriendContent.SetActive(true);
                     break;
                 case FriendsTab.Requests:
-                    requestsContent.SetActive(true);
+                    if (requestsContent != null) requestsContent.SetActive(true);
                     break;
             }
         }

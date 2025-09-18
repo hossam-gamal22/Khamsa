@@ -28,8 +28,10 @@ namespace Project.UI
         
         public void Init()
         {
-            statisticsTab.onClick.AddListener(() => SetTab(ProfileTab.Statistics));
-            inventoryTab.onClick.AddListener(() => SetTab(ProfileTab.Inventory));
+            if (statisticsTab != null)
+                statisticsTab.onClick.AddListener(() => SetTab(ProfileTab.Statistics));
+            if (inventoryTab != null)
+                inventoryTab.onClick.AddListener(() => SetTab(ProfileTab.Inventory));
             
             SetTab(ProfileTab.Statistics);
             LoadStatistics();
@@ -37,17 +39,22 @@ namespace Project.UI
         
         private void SetTab(ProfileTab tab)
         {
-            statisticsContent.SetActive(tab == ProfileTab.Statistics);
-            inventoryContent.SetActive(tab == ProfileTab.Inventory);
+            if (statisticsContent != null)
+                statisticsContent.SetActive(tab == ProfileTab.Statistics);
+            if (inventoryContent != null)
+                inventoryContent.SetActive(tab == ProfileTab.Inventory);
         }
         
         private void LoadStatistics()
         {
-            // TODO: Load actual statistics from save data
-            rankText.text = "10";
-            pointsText.text = "10000";
-            correctAnswersText.text = "100";
-            kingOfDayText.text = "1";
+            if (rankText != null)
+                rankText.text = "10";
+            if (pointsText != null)
+                pointsText.text = "10000";
+            if (correctAnswersText != null)
+                correctAnswersText.text = "100";
+            if (kingOfDayText != null)
+                kingOfDayText.text = "1";
         }
         
         public void Open() { }

@@ -21,7 +21,6 @@ namespace Project.Core
         {
             LoadStickerDatabase();
             
-            // Load owned stickers
             string ownedStr = PlayerPrefs.GetString("OwnedStickers", "");
             ownedStickers = string.IsNullOrEmpty(ownedStr) ? new string[0] : ownedStr.Split(',');
             
@@ -30,12 +29,11 @@ namespace Project.Core
         
         private void LoadStickerDatabase()
         {
-            // Load from Resources/DB/stickers.csv
             TextAsset csvFile = Resources.Load<TextAsset>("DB/stickers");
             if (csvFile != null)
             {
                 string[] lines = csvFile.text.Split('\n');
-                stickers = new StickerData[lines.Length - 1]; // Skip header
+                stickers = new StickerData[lines.Length - 1];
                 
                 for (int i = 1; i < lines.Length; i++)
                 {
@@ -68,13 +66,11 @@ namespace Project.Core
         
         public void PurchaseSticker(string stickerName)
         {
-            // Add to owned stickers
             var newOwned = new string[ownedStickers.Length + 1];
             ownedStickers.CopyTo(newOwned, 0);
             newOwned[ownedStickers.Length] = stickerName;
             ownedStickers = newOwned;
             
-            // Save to PlayerPrefs
             PlayerPrefs.SetString("OwnedStickers", string.Join(",", ownedStickers));
             Debug.Log($"Purchased sticker: {stickerName}");
         }

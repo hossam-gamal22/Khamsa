@@ -26,64 +26,65 @@ namespace Project.UI.Views
             soundService = service;
             coinsWallet = wallet;
             
-            // Setup UI
-            nameText.text = data.name;
-            priceText.text = data.price.ToString();
+            if (nameText != null)
+                nameText.text = data.name;
+            if (priceText != null)
+                priceText.text = data.price.ToString();
             
-            // Load sound icon
-            Sprite icon = soundService.LoadSoundIcon(data.icon);
-            if (icon != null)
+            if (soundIcon != null && soundService != null)
             {
-                soundIcon.sprite = icon;
+                Sprite icon = soundService.LoadSoundIcon(data.icon);
+                if (icon != null)
+                {
+                    soundIcon.sprite = icon;
+                }
             }
             
-            buyButton.onClick.AddListener(OnBuyClicked);
-            playButton.onClick.AddListener(OnPlayClicked);
+            if (buyButton != null)
+                buyButton.onClick.AddListener(OnBuyClicked);
+            if (playButton != null)
+                playButton.onClick.AddListener(OnPlayClicked);
             UpdateVisuals();
         }
         
         private void UpdateVisuals()
         {
-            bool isOwned = soundService.IsSoundOwned(soundData.name);
-            bool canAfford = coinsWallet.GetCoins() >= soundData.price;
+            bool isOwned = soundService != null && soundService.IsSoundOwned(soundData.name);
+            bool canAfford = coinsWallet != null && coinsWallet.GetCoins() >= soundData.price;
             
             if (isOwned)
             {
-                ownedOverlay.SetActive(true);
-                statusText.text = "مملوك";
-                buyButton.interactable = false;
-                playButton.interactable = true; // Can preview owned sounds
+                if (ownedOverlay != null) ownedOverlay.SetActive(true);
+                if (statusText != null) statusText.text = "مملوك";
+                if (buyButton != null) buyButton.interactable = false;
+                if (playButton != null) playButton.interactable = true;
             }
             else
             {
-                ownedOverlay.SetActive(false);
-                statusText.text = canAfford ? "شراء" : "لا يكفي";
-                buyButton.interactable = canAfford;
-                playButton.interactable = true; // Can preview before buying
+                if (ownedOverlay != null) ownedOverlay.SetActive(false);
+                if (statusText != null) statusText.text = canAfford ? "شراء" : "لا يكفي";
+                if (buyButton != null) buyButton.interactable = canAfford;
+                if (playButton != null) playButton.interactable = true;
             }
         }
         
         private void OnBuyClicked()
         {
-            if (coinsWallet.SpendCoins(soundData.price))
+            if (coinsWallet != null && coinsWallet.SpendCoins(soundData.price))
             {
-                soundService.PurchaseSound(soundData.name);
+                soundService?.PurchaseSound(soundData.name);
                 UpdateVisuals();
             }
         }
         
         private void OnPlayClicked()
         {
-            soundService.PlaySoundPreview(soundData.audioFile);
+            soundService?.PlaySoundPreview(soundData.audioFile);
         }
         
         private void OnDisable()
         {
-            // Stop sound when card is disabled
-            if (soundService != null)
-            {
-                soundService.StopSoundPreview();
-            }
+            soundService?.StopSoundPreview();
         }
     }
 }

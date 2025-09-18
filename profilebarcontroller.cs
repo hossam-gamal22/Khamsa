@@ -4,8 +4,6 @@ namespace Project.UI
     using UnityEngine.UI;
     using TMPro;
     using Project.Core;
-    using Project.Services;
-    // Import Project.Systems to access BootLoader
     using Project.Systems;
 
     public class ProfileBarController : MonoBehaviour
@@ -35,96 +33,127 @@ namespace Project.UI
         
         public void Init()
         {
-            // Get services from global BootLoader
-            usernameService = BootLoader.Instance.GetUsernameService();
-            avatarService = BootLoader.Instance.GetAvatarService();
-            audioService = BootLoader.Instance.GetAudioService();
+            var bootLoader = BootLoader.Instance;
+            if (bootLoader != null)
+            {
+                usernameService = bootLoader.GetUsernameService();
+                avatarService = bootLoader.GetAvatarService();
+                audioService = bootLoader.GetAudioService();
+            }
             
-            // Setup listeners
-            editButton.onClick.AddListener(OnEditUsernameClicked);
-            confirmButton.onClick.AddListener(OnConfirmUsernameClicked);
-            cancelButton.onClick.AddListener(OnCancelUsernameClicked);
+            if (editButton != null)
+                editButton.onClick.AddListener(OnEditUsernameClicked);
+            if (confirmButton != null)
+                confirmButton.onClick.AddListener(OnConfirmUsernameClicked);
+            if (cancelButton != null)
+                cancelButton.onClick.AddListener(OnCancelUsernameClicked);
             
-            // Subscribe to changes
-            avatarService.OnAvatarChanged += UpdateAvatarDisplay;
-            usernameService.OnUsernameChanged += UpdateUsernameDisplay;
+            if (avatarService != null)
+                avatarService.OnAvatarChanged += UpdateAvatarDisplay;
+            if (usernameService != null)
+            {
+                usernameService.OnUsernameChanged += UpdateUsernameDisplay;
+                if (usernameInputField != null)
+                {
+                    usernameInputField.characterLimit = usernameService.GetMaxLength();
+                    usernameInputField.onValueChanged.AddListener(OnUsernameInputChanged);
+                }
+            }
             
-            // Setup input field
-            usernameInputField.characterLimit = usernameService.GetMaxLength();
-            usernameInputField.onValueChanged.AddListener(OnUsernameInputChanged);
+            if (avatarService != null)
+                UpdateAvatarDisplay(avatarService.GetCurrentAvatar());
+            if (usernameService != null)
+                UpdateUsernameDisplay(usernameService.GetUsername());
             
-            // Initial display
-            UpdateAvatarDisplay(avatarService.GetCurrentAvatar());
-            UpdateUsernameDisplay(usernameService.GetUsername());
-            
-            // Hide edit panel initially
-            editUsernamePanel.SetActive(false);
+            if (editUsernamePanel != null)
+                editUsernamePanel.SetActive(false);
             HideAllErrors();
         }
         
         private void UpdateAvatarDisplay(string avatarName)
         {
-            Sprite avatarSprite = avatarService.LoadAvatarSprite(avatarName);
-            if (avatarSprite != null)
+            if (avatarImage != null && avatarService != null)
             {
-                avatarImage.sprite = avatarSprite;
+                Sprite avatarSprite = avatarService.LoadAvatarSprite(avatarName);
+                if (avatarSprite != null)
+                {
+                    avatarImage.sprite = avatarSprite;
+                }
             }
         }
         
         private void UpdateUsernameDisplay(string username)
         {
-            usernameText.text = username;
+            if (usernameText != null)
+            {
+                usernameText.text = username;
+            }
         }
         
         private void OnEditUsernameClicked()
         {
-            audioService.PlayButtonClick();
-            editUsernamePanel.SetActive(true);
-            usernameInputField.text = usernameService.GetUsername();
-            usernameInputField.Select();
-            HideAllErrors();
+            audioService?.PlayButtonClick();
+            if (editUsernamePanel != null && usernameService != null)
+            {
+                editUsernamePanel.SetActive(true);
+                if (usernameInputField != null)
+                {
+                    usernameInputField.text = usernameService.GetUsername();
+                    usernameInputField.Select();
+                }
+                HideAllErrors();
+            }
         }
         
         private void OnConfirmUsernameClicked()
         {
-            audioService.PlayButtonClick();
-            string newUsername = usernameInputField.text;
-            
-            UsernameService.ValidationResult result = usernameService.ValidateUsername(newUsername);
-            
-            if (result == UsernameService.ValidationResult.Valid)
+            audioService?.PlayButtonClick();
+            if (usernameInputField != null && usernameService != null)
             {
-                usernameService.SetUsername(newUsername);
-                editUsernamePanel.SetActive(false);
-                HideAllErrors();
-            }
-            else
-            {
-                ShowError(result);
+                string newUsername = usernameInputField.text;
+                
+                UsernameService.ValidationResult result = usernameService.ValidateUsername(newUsername);
+                
+                if (result == UsernameService.ValidationResult.Valid)
+                {
+                    usernameService.SetUsername(newUsername);
+                    if (editUsernamePanel != null)
+                        editUsernamePanel.SetActive(false);
+                    HideAllErrors();
+                }
+                else
+                {
+                    ShowError(result);
+                }
             }
         }
         
         private void OnCancelUsernameClicked()
         {
-            audioService.PlayButtonClick();
-            editUsernamePanel.SetActive(false);
+            audioService?.PlayButtonClick();
+            if (editUsernamePanel != null)
+                editUsernamePanel.SetActive(false);
             HideAllErrors();
         }
         
         private void OnUsernameInputChanged(string value)
         {
-            // Real-time validation feedback
-            UsernameService.ValidationResult result = usernameService.ValidateUsername(value);
-            
-            if (result == UsernameService.ValidationResult.Valid)
+            if (usernameService != null)
             {
-                HideAllErrors();
-                confirmButton.interactable = true;
-            }
-            else
-            {
-                ShowError(result);
-                confirmButton.interactable = false;
+                UsernameService.ValidationResult result = usernameService.ValidateUsername(value);
+                
+                if (result == UsernameService.ValidationResult.Valid)
+                {
+                    HideAllErrors();
+                    if (confirmButton != null)
+                        confirmButton.interactable = true;
+                }
+                else
+                {
+                    ShowError(result);
+                    if (confirmButton != null)
+                        confirmButton.interactable = false;
+                }
             }
         }
         
@@ -135,26 +164,34 @@ namespace Project.UI
             switch (result)
             {
                 case UsernameService.ValidationResult.ContainsArabic:
-                    arabicErrorText.gameObject.SetActive(true);
+                    if (arabicErrorText != null)
+                        arabicErrorText.gameObject.SetActive(true);
                     break;
                 case UsernameService.ValidationResult.TooLong:
-                    lengthErrorText.gameObject.SetActive(true);
+                    if (lengthErrorText != null)
+                        lengthErrorText.gameObject.SetActive(true);
                     break;
                 case UsernameService.ValidationResult.AlreadyTaken:
-                    takenErrorText.gameObject.SetActive(true);
+                    if (takenErrorText != null)
+                        takenErrorText.gameObject.SetActive(true);
                     break;
             }
             
-            errorPanel.SetActive(true);
-            audioService.PlayError();
+            if (errorPanel != null)
+                errorPanel.SetActive(true);
+            audioService?.PlayError();
         }
         
         private void HideAllErrors()
         {
-            errorPanel.SetActive(false);
-            arabicErrorText.gameObject.SetActive(false);
-            lengthErrorText.gameObject.SetActive(false);
-            takenErrorText.gameObject.SetActive(false);
+            if (errorPanel != null)
+                errorPanel.SetActive(false);
+            if (arabicErrorText != null)
+                arabicErrorText.gameObject.SetActive(false);
+            if (lengthErrorText != null)
+                lengthErrorText.gameObject.SetActive(false);
+            if (takenErrorText != null)
+                takenErrorText.gameObject.SetActive(false);
         }
         
         public void Open() { }

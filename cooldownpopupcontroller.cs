@@ -3,8 +3,6 @@ namespace Project.UI
     using UnityEngine;
     using UnityEngine.UI;
     using TMPro;
-    using Project.Services;
-    // Import Project.Systems to access BootLoader
     using Project.Systems;
 
     public class CooldownPopupController : MonoBehaviour
@@ -20,19 +18,24 @@ namespace Project.UI
         [SerializeField] private RectTransform contentPanel;
 
         private AudioService audioService;
+        private RewardedAdService rewardedAdService;
         private bool isOpen = false;
 
         public void Init()
         {
-            audioService = BootLoader.Instance.GetAudioService();
+            var bootLoader = BootLoader.Instance;
+            if (bootLoader != null)
+            {
+                audioService = bootLoader.GetAudioService();
+                rewardedAdService = bootLoader.GetRewardedAdService();
+            }
 
-            // Setup button
-            exitButton.onClick.AddListener(Close);
+            if (exitButton != null)
+                exitButton.onClick.AddListener(Close);
 
-            // Setup initial state
-            popupPanel.SetActive(false);
+            if (popupPanel != null)
+                popupPanel.SetActive(false);
 
-            // Setup message text
             if (messageText != null)
             {
                 messageText.text = "يجب الانتظار قبل مشاهدة إعلان آخر";
@@ -45,29 +48,29 @@ namespace Project.UI
 
             isOpen = true;
 
-            // Update countdown text
             if (cooldownText != null)
             {
                 cooldownText.text = $"{remainingMinutes:D2}:{remainingSeconds:D2}";
             }
 
-            // Show popup with animation
-            popupPanel.SetActive(true);
+            if (popupPanel != null)
+                popupPanel.SetActive(true);
 
-            // Fade in animation
-            canvasGroup.alpha = 0f;
-            LeanTween.alphaCanvas(canvasGroup, 1f, 0.3f)
-                .setEase(LeanTweenType.easeOutQuart);
+            if (canvasGroup != null)
+            {
+                canvasGroup.alpha = 0f;
+                LeanTween.alphaCanvas(canvasGroup, 1f, 0.3f)
+                    .setEase(LeanTweenType.easeOutQuart);
+            }
 
-            // Scale in animation
-            contentPanel.localScale = Vector3.zero;
-            LeanTween.scale(contentPanel.gameObject, Vector3.one, 0.4f)
-                .setEase(LeanTweenType.easeOutBack);
+            if (contentPanel != null)
+            {
+                contentPanel.localScale = Vector3.zero;
+                LeanTween.scale(contentPanel.gameObject, Vector3.one, 0.4f)
+                    .setEase(LeanTweenType.easeOutBack);
+            }
 
-            // Play error sound
             audioService?.PlayError();
-
-            // Start countdown update
             StartCountdownUpdate();
         }
 
@@ -77,25 +80,28 @@ namespace Project.UI
 
             audioService?.PlayButtonClick();
 
-            // Animate out
-            LeanTween.alphaCanvas(canvasGroup, 0f, 0.2f)
-                .setEase(LeanTweenType.easeInQuart)
-                .setOnComplete(() =>
-                {
-                    popupPanel.SetActive(false);
-                    isOpen = false;
-                });
+            if (canvasGroup != null && popupPanel != null)
+            {
+                LeanTween.alphaCanvas(canvasGroup, 0f, 0.2f)
+                    .setEase(LeanTweenType.easeInQuart)
+                    .setOnComplete(() =>
+                    {
+                        popupPanel.SetActive(false);
+                        isOpen = false;
+                    });
+            }
 
-            LeanTween.scale(contentPanel.gameObject, Vector3.zero, 0.3f)
-                .setEase(LeanTweenType.easeInBack);
+            if (contentPanel != null)
+            {
+                LeanTween.scale(contentPanel.gameObject, Vector3.zero, 0.3f)
+                    .setEase(LeanTweenType.easeInBack);
+            }
 
-            // Stop countdown
             StopCountdownUpdate();
         }
 
         private void StartCountdownUpdate()
         {
-            // Update countdown every second
             InvokeRepeating(nameof(UpdateCountdown), 1f, 1f);
         }
 
@@ -106,19 +112,14 @@ namespace Project.UI
 
         private void UpdateCountdown()
         {
-            if (!isOpen) return;
-
-            // Get remaining time from RewardedAdService
-            var rewardedAdService = BootLoader.Instance.GetRewardedAdService();
+            if (!isOpen || rewardedAdService == null) return;
 
             if (rewardedAdService.CanShowAd())
             {
-                // Cooldown finished
                 Close();
                 return;
             }
 
-            // Calculate remaining time (simplified - you'd get this from the service)
             System.TimeSpan remainingTime = rewardedAdService.GetRemainingCooldown();
 
             if (cooldownText != null)

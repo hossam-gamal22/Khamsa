@@ -4,8 +4,6 @@ namespace Project.UI
     using UnityEngine.UI;
     using TMPro;
     using Project.Main_Screen;
-    using Project.Services;
-    // Import Project.Systems to access BootLoader
     using Project.Systems;
 
     public class FooterNavController : MonoBehaviour
@@ -52,16 +50,21 @@ namespace Project.UI
 
         public void Init()
         {
-            // Get audio service
-            audioService = BootLoader.Instance.GetAudioService();
+            var bootLoader = BootLoader.Instance;
+            if (bootLoader != null)
+            {
+                audioService = bootLoader.GetAudioService();
+            }
 
-            // Setup button listeners
-            homeButton.onClick.AddListener(() => SetActiveTab(homeButton, PageType.Home));
-            shopButton.onClick.AddListener(() => SetActiveTab(shopButton, PageType.Shop));
-            friendsButton.onClick.AddListener(() => SetActiveTab(friendsButton, PageType.Friends));
-            profileButton.onClick.AddListener(() => SetActiveTab(profileButton, PageType.Profile));
+            if (homeButton != null)
+                homeButton.onClick.AddListener(() => SetActiveTab(homeButton, PageType.Home));
+            if (shopButton != null)
+                shopButton.onClick.AddListener(() => SetActiveTab(shopButton, PageType.Shop));
+            if (friendsButton != null)
+                friendsButton.onClick.AddListener(() => SetActiveTab(friendsButton, PageType.Friends));
+            if (profileButton != null)
+                profileButton.onClick.AddListener(() => SetActiveTab(profileButton, PageType.Profile));
 
-            // Set home as default
             SetActiveTab(homeButton, PageType.Home);
         }
 
@@ -87,7 +90,6 @@ namespace Project.UI
 
             currentActiveButton = selectedButton;
 
-            // Navigate to page
             if (navigationManager != null)
             {
                 navigationManager.NavigateToPage(pageType);
@@ -96,32 +98,31 @@ namespace Project.UI
 
         private void SetButtonState(Button button, Image icon, TextMeshProUGUI label, Sprite sprite, bool isActive)
         {
-            // Set sprite
-            if (sprite != null)
+            if (sprite != null && icon != null)
             {
                 icon.sprite = sprite;
             }
 
-            // Set label color
             if (label != null)
             {
                 label.color = isActive ? activeColor : normalColor;
             }
 
-            // Optional: Add scale animation for active state
-            if (isActive)
+            if (button != null)
             {
-                LeanTween.scale(button.gameObject, Vector3.one * 1.1f, 0.2f)
-                    .setEase(LeanTweenType.easeOutBack);
-            }
-            else
-            {
-                LeanTween.scale(button.gameObject, Vector3.one, 0.2f)
-                    .setEase(LeanTweenType.easeOutQuart);
+                if (isActive)
+                {
+                    LeanTween.scale(button.gameObject, Vector3.one * 1.1f, 0.2f)
+                        .setEase(LeanTweenType.easeOutBack);
+                }
+                else
+                {
+                    LeanTween.scale(button.gameObject, Vector3.one, 0.2f)
+                        .setEase(LeanTweenType.easeOutQuart);
+                }
             }
         }
 
-        // Method to programmatically set active tab
         public void SetActiveTab(PageType pageType)
         {
             switch (pageType)

@@ -2,8 +2,6 @@ namespace Project.UI
 {
     using UnityEngine;
     using UnityEngine.UI;
-    using Project.Services;
-    // Import Project.Systems to access BootLoader
     using Project.Systems;
 
     public class SFXToggle : MonoBehaviour
@@ -33,33 +31,34 @@ namespace Project.UI
 
         private void Start()
         {
-            audioService = BootLoader.Instance.GetAudioService();
+            var bootLoader = BootLoader.Instance;
+            if (bootLoader != null)
+            {
+                audioService = bootLoader.GetAudioService();
+            }
 
-            // Get initial state
-            isOn = audioService.IsSFXEnabled();
+            if (audioService != null)
+            {
+                isOn = audioService.IsSFXEnabled();
+            }
 
-            // Setup button
-            toggleButton.onClick.AddListener(OnToggleClicked);
+            if (toggleButton != null)
+                toggleButton.onClick.AddListener(OnToggleClicked);
 
-            // Set initial visual state (without animation)
             SetVisualState(false);
         }
 
         private void OnToggleClicked()
         {
-            // Toggle state
             isOn = !isOn;
 
-            // Apply to audio service
-            audioService.SetSFXEnabled(isOn);
+            audioService?.SetSFXEnabled(isOn);
 
-            // Animate visual change
             SetVisualState(true);
 
-            // Play toggle sound (if SFX is enabled)
             if (isOn)
             {
-                audioService.PlayButtonClick();
+                audioService?.PlayButtonClick();
             }
         }
 
@@ -69,21 +68,17 @@ namespace Project.UI
             Color targetBackgroundColor = isOn ? onBackgroundColor : offBackgroundColor;
             Color targetHandleColor = isOn ? onHandleColor : offHandleColor;
 
-            if (animate)
+            if (animate && handle != null && background != null && handleImage != null)
             {
-                // Animate handle position with bounce
                 LeanTween.moveLocalX(handle.gameObject, targetPositionX, animationDuration)
                     .setEase(easeType);
 
-                // Animate background color
                 LeanTween.value(gameObject, UpdateBackgroundColor, background.color, targetBackgroundColor, animationDuration)
                     .setEase(LeanTweenType.easeOutQuart);
 
-                // Animate handle color
                 LeanTween.value(gameObject, UpdateHandleColor, handleImage.color, targetHandleColor, animationDuration)
                     .setEase(LeanTweenType.easeOutQuart);
 
-                // Cool wobble effect
                 LeanTween.rotateZ(handle.gameObject, 15f, animationDuration * 0.3f)
                     .setEase(LeanTweenType.easeOutBack)
                     .setOnComplete(() =>
@@ -97,9 +92,8 @@ namespace Project.UI
                             });
                     });
             }
-            else
+            else if (handle != null && background != null && handleImage != null)
             {
-                // Set immediately
                 Vector3 pos = handle.localPosition;
                 pos.x = targetPositionX;
                 handle.localPosition = pos;
@@ -112,12 +106,14 @@ namespace Project.UI
 
         private void UpdateBackgroundColor(Color color)
         {
-            background.color = color;
+            if (background != null)
+                background.color = color;
         }
 
         private void UpdateHandleColor(Color color)
         {
-            handleImage.color = color;
+            if (handleImage != null)
+                handleImage.color = color;
         }
 
         public void SetState(bool enabled)

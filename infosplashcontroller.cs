@@ -3,8 +3,8 @@ namespace Project.UI
     using UnityEngine;
     using UnityEngine.UI;
     using TMPro;
-    using Project.Services;
     using Project.Systems;
+
     public class InfoSplashController : MonoBehaviour
     {
         [Header("UI Elements")]
@@ -24,49 +24,63 @@ namespace Project.UI
         
         public void Init()
         {
-            audioService = BootLoader.Instance.GetAudioService();
+            var bootLoader = BootLoader.Instance;
+            if (bootLoader != null)
+            {
+                audioService = bootLoader.GetAudioService();
+            }
             
-            closeButton.onClick.AddListener(Close);
-            facebookButton.onClick.AddListener(OnFacebookClicked);
+            if (closeButton != null)
+                closeButton.onClick.AddListener(Close);
+            if (facebookButton != null)
+                facebookButton.onClick.AddListener(OnFacebookClicked);
             
-            // Setup initial state
-            splashPanel.SetActive(false);
+            if (splashPanel != null)
+                splashPanel.SetActive(false);
         }
         
         public void Open()
         {
-            splashPanel.SetActive(true);
+            if (splashPanel != null)
+                splashPanel.SetActive(true);
             
-            // Animate in
-            canvasGroup.alpha = 0f;
-            LeanTween.alphaCanvas(canvasGroup, 1f, 0.3f)
-                .setEase(LeanTweenType.easeOutQuart);
+            if (canvasGroup != null)
+            {
+                canvasGroup.alpha = 0f;
+                LeanTween.alphaCanvas(canvasGroup, 1f, 0.3f)
+                    .setEase(LeanTweenType.easeOutQuart);
+            }
             
-            contentPanel.localScale = Vector3.zero;
-            LeanTween.scale(contentPanel.gameObject, Vector3.one, 0.4f)
-                .setEase(LeanTweenType.easeOutBack);
+            if (contentPanel != null)
+            {
+                contentPanel.localScale = Vector3.zero;
+                LeanTween.scale(contentPanel.gameObject, Vector3.one, 0.4f)
+                    .setEase(LeanTweenType.easeOutBack);
+            }
         }
         
         public void Close()
         {
             audioService?.PlayButtonClick();
             
-            // Animate out
-            LeanTween.alphaCanvas(canvasGroup, 0f, 0.2f)
-                .setEase(LeanTweenType.easeInQuart)
-                .setOnComplete(() => splashPanel.SetActive(false));
+            if (canvasGroup != null && splashPanel != null)
+            {
+                LeanTween.alphaCanvas(canvasGroup, 0f, 0.2f)
+                    .setEase(LeanTweenType.easeInQuart)
+                    .setOnComplete(() => splashPanel.SetActive(false));
+            }
             
-            LeanTween.scale(contentPanel.gameObject, Vector3.zero, 0.3f)
-                .setEase(LeanTweenType.easeInBack);
+            if (contentPanel != null)
+            {
+                LeanTween.scale(contentPanel.gameObject, Vector3.zero, 0.3f)
+                    .setEase(LeanTweenType.easeInBack);
+            }
         }
         
         private void OnFacebookClicked()
         {
             audioService?.PlayButtonClick();
-            
-            // Open Facebook URL
             Application.OpenURL(facebookURL);
-            
             Debug.Log($"Opening Facebook page: {facebookURL}");
         }
         

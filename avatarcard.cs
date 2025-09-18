@@ -25,13 +25,16 @@ namespace Project.UI.Views
             avatarService = service;
             coinsWallet = wallet;
             
-            buyButton.onClick.AddListener(OnBuyClicked);
+            if (buyButton != null)
+                buyButton.onClick.AddListener(OnBuyClicked);
             
-            // Load avatar sprite
-            Sprite sprite = avatarService.LoadAvatarSprite(avatarData.avatar);
-            if (sprite != null)
+            if (avatarImage != null && avatarService != null)
             {
-                avatarImage.sprite = sprite;
+                Sprite sprite = avatarService.LoadAvatarSprite(avatarData.avatar);
+                if (sprite != null)
+                {
+                    avatarImage.sprite = sprite;
+                }
             }
             
             UpdateVisuals();
@@ -39,68 +42,58 @@ namespace Project.UI.Views
         
         private void UpdateVisuals()
         {
-            bool isOwned = avatarService.IsAvatarOwned(avatarData.avatar) || avatarData.free;
-            bool isActive = avatarService.GetCurrentAvatar() == avatarData.avatar;
+            bool isOwned = (avatarService != null && avatarService.IsAvatarOwned(avatarData.avatar)) || avatarData.free;
+            bool isActive = avatarService != null && avatarService.GetCurrentAvatar() == avatarData.avatar;
             
             if (avatarData.free)
             {
                 if (isActive)
                 {
-                    // Free + Active
-                    activeBorder.SetActive(true);
-                    lockedOverlay.SetActive(false);
-                    statusText.text = "مفعل";
-                    buyButton.interactable = false;
+                    if (activeBorder != null) activeBorder.SetActive(true);
+                    if (lockedOverlay != null) lockedOverlay.SetActive(false);
+                    if (statusText != null) statusText.text = "مفعل";
+                    if (buyButton != null) buyButton.interactable = false;
                 }
                 else
                 {
-                    // Free + Inactive
-                    activeBorder.SetActive(false);
-                    lockedOverlay.SetActive(false);
-                    statusText.text = "تفعيل";
-                    buyButton.interactable = true;
+                    if (activeBorder != null) activeBorder.SetActive(false);
+                    if (lockedOverlay != null) lockedOverlay.SetActive(false);
+                    if (statusText != null) statusText.text = "تفعيل";
+                    if (buyButton != null) buyButton.interactable = true;
                 }
             }
             else
             {
                 if (isOwned)
                 {
-                    // Paid + Owned
-                    activeBorder.SetActive(isActive);
-                    lockedOverlay.SetActive(false);
-                    statusText.text = isActive ? "مفعل" : "تفعيل";
-                    buyButton.interactable = !isActive;
+                    if (activeBorder != null) activeBorder.SetActive(isActive);
+                    if (lockedOverlay != null) lockedOverlay.SetActive(false);
+                    if (statusText != null) statusText.text = isActive ? "مفعل" : "تفعيل";
+                    if (buyButton != null) buyButton.interactable = !isActive;
                 }
                 else
                 {
-                    // Paid + Locked
-                    activeBorder.SetActive(false);
-                    lockedOverlay.SetActive(true);
-                    priceText.text = avatarData.price.ToString();
-                    buyButton.interactable = coinsWallet.GetCoins() >= avatarData.price;
+                    if (activeBorder != null) activeBorder.SetActive(false);
+                    if (lockedOverlay != null) lockedOverlay.SetActive(true);
+                    if (priceText != null) priceText.text = avatarData.price.ToString();
+                    if (buyButton != null && coinsWallet != null)
+                        buyButton.interactable = coinsWallet.GetCoins() >= avatarData.price;
                 }
             }
         }
         
         private void OnBuyClicked()
         {
-            if (avatarData.free || avatarService.IsAvatarOwned(avatarData.avatar))
+            if (avatarData.free || (avatarService != null && avatarService.IsAvatarOwned(avatarData.avatar)))
             {
-                // Activate avatar
-                avatarService.SetAvatar(avatarData.avatar);
+                avatarService?.SetAvatar(avatarData.avatar);
             }
             else
             {
-                // Purchase avatar
-                if (coinsWallet.SpendCoins(avatarData.price))
+                if (coinsWallet != null && coinsWallet.SpendCoins(avatarData.price))
                 {
-                    // TODO: Add avatar to owned list
-                    avatarService.SetAvatar(avatarData.avatar);
-                }
-                else
-                {
-                    // Show insufficient funds popup
-                    // TODO: Implement NoMoney popup
+                    avatarService?.PurchaseAvatar(avatarData.avatar);
+                    avatarService?.SetAvatar(avatarData.avatar);
                 }
             }
             

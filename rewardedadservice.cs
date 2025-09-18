@@ -1,7 +1,8 @@
-namespace Project.Services
+namespace Project.Core
 {
     using UnityEngine;
     using System;
+    using System.Collections;
 
     [System.Serializable]
     public class RewardedAdService : MonoBehaviour
@@ -27,7 +28,6 @@ namespace Project.Services
                 lastAdTime = DateTime.MinValue;
             }
             
-            // Reset daily count if new day
             if (DateTime.Now.Date != lastAdTime.Date)
             {
                 dailyAdCount = 0;
@@ -39,12 +39,8 @@ namespace Project.Services
         
         public bool CanShowAd()
         {
-            // Check daily limit
             if (dailyAdCount >= maxAdsPerDay) return false;
-            
-            // Check cooldown
             if ((DateTime.Now - lastAdTime).TotalMinutes < cooldownMinutes) return false;
-            
             return true;
         }
         
@@ -52,7 +48,6 @@ namespace Project.Services
         {
             if (dailyAdCount >= maxAdsPerDay)
             {
-                // Return time until next day
                 var tomorrow = DateTime.Now.Date.AddDays(1);
                 return tomorrow - DateTime.Now;
             }
@@ -77,20 +72,14 @@ namespace Project.Services
                 return;
             }
             
-            // TODO: Integrate with AdMob
-            // For now, simulate ad completion
             Debug.Log("Showing rewarded ad...");
-            
-            // Simulate ad watching delay
             StartCoroutine(SimulateAdWatching(onSuccess));
         }
         
-        private System.Collections.IEnumerator SimulateAdWatching(System.Action<int> onSuccess)
+        private IEnumerator SimulateAdWatching(System.Action<int> onSuccess)
         {
-            // Simulate 3 second ad
             yield return new WaitForSeconds(3f);
             
-            // Simulate successful ad completion
             dailyAdCount++;
             lastAdTime = DateTime.Now;
             PlayerPrefs.SetInt("DailyAdCount", dailyAdCount);
@@ -102,7 +91,6 @@ namespace Project.Services
             onSuccess?.Invoke(coinsPerAd);
         }
         
-        // Inspector methods for testing
         [ContextMenu("Reset Daily Ads")]
         private void ResetDailyAds()
         {
