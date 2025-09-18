@@ -2,6 +2,7 @@ namespace Project.UI
 {
     using UnityEngine;
     using UnityEngine.UI;
+    using Project.Core;
     using Project.Systems;
 
     public class SFXToggle : MonoBehaviour

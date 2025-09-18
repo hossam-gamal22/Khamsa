@@ -2,6 +2,7 @@ namespace Project.UI
 {
     using UnityEngine;
     using UnityEngine.UI;
+    using Project.Core;
     using Project.Systems;
 
     public class SettingsSplashController : MonoBehaviour
@@ -84,21 +85,18 @@ namespace Project.UI
         {
             audioService?.PlayButtonClick();
             Debug.Log("Google login clicked");
-            // TODO: Implement Google login
         }
         
         private void OnAppleLogin()
         {
             audioService?.PlayButtonClick();
             Debug.Log("Apple login clicked");
-            // TODO: Implement Apple login
         }
         
         private void OnDeleteAccount()
         {
             audioService?.PlayButtonClick();
             Debug.Log("Delete account clicked");
-            // TODO: Show confirmation and delete account
         }
         
         public void Build() { }

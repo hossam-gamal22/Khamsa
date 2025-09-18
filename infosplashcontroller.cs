@@ -3,6 +3,7 @@ namespace Project.UI
     using UnityEngine;
     using UnityEngine.UI;
     using TMPro;
+    using Project.Core;
     using Project.Systems;
 
     public class InfoSplashController : MonoBehaviour
